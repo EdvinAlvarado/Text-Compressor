@@ -2,7 +2,7 @@
 # can't work with newlines.
 f = open("hardtest.txt", "r")
 # f = open("repeatingtest.txt", "r")
-s = f.readline()
+s = f.read()
 lst = s.split(" ")
 setlist = set(lst)
 print(lst)
