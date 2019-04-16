@@ -1,19 +1,23 @@
 f = open("test.czip", "r")
-lst = []
 counter = 0
-for line in f.readlines():
-	lst = line.split("/")
-	print(lst)
+
+
+compressed_str = f.read()
+# print(compressed_str)
 
 dic = {}
 
-for itempair in lst[:len(lst)-1]: # limit the list to avoid the '' end line.
-	itempairlist = itempair.split("|")	
+for itempair in compressed_str.split("/"): # limit the list to avoid the '' end line.
+	print(itempair)
+	itempairlist = itempair.split("|")
 	dic[itempairlist[0]] = []
-	# print(dic)
-	for num in itempairlist[1].split(","):
-		print(num)
-		dic[itempairlist[0]].append(int(num, 16))
+	print(itempairlist)
+	try:
+		for hex_location in itempairlist[1].split(","):
+			print(hex_location)
+			dic[itempairlist[0]].append(int(hex_location, 16))
+	except IndexError:
+		pass
 
 
 print(dic)
