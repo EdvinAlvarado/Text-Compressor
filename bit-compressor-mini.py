@@ -4,6 +4,7 @@ f.write(string)
 f.write("\n")
 
 hexstr = ""
+# Creates the hexstring version of the string.
 for c in string:
 	# ord(c) gives ASCCI code.
 	# {:08b} prints int as a unsigned 8 bit.
@@ -14,6 +15,7 @@ print(hexstr)
 initial_len_hexstr = len(hexstr)
 print(initial_len_hexstr)
 
+# Starting size will be just one bigger of half of the length but its capped at 65636. This is because that is the max distance the marker FFXXYY can do.
 def starting_size(length):
 	if length < 65636:
 		if (length > 2) and (length % 2 == 0):
@@ -26,23 +28,12 @@ def starting_size(length):
 		print("wrong hexstr length.")
 
 # print(starting_size(len_hexstr))
-
 print("\n")
 
+# Goes from the starting size to 6 because the marker itself is 6 hexes long because anything less than 7 will not compressed or just make it bigger.
 for block in range(starting_size(len(hexstr)), 6, -1):
 	print("block size: {}".format(block))	
-	# hexstr_list = []
-	# n = 0	
-	# for n in range(len_hexstr // block + 1):
-	# 	print("n: {}".format(n))
-	# 	if block * (n+1) > len_hexstr:
-	# 		print(hexstr[block*n :])
-	# 		hexstr_list.append(hexstr[block*n :])
-	# 	else:
-	# 		print(hexstr[block*n : block * (n+1)])
-	# 		hexstr_list.append(hexstr[block*n : block * (n+1)])
-	# print(hexstr_list)
-	# print("\n")
+
 	for i in range(block, len(hexstr) - 6):
 		if len(hexstr[i:i+block]) == block:
 			# print("{:>22}".format(hexstr[i:i+block]))
@@ -55,24 +46,23 @@ for block in range(starting_size(len(hexstr)), 6, -1):
 				hexstr = hexstr[:i] + "FF" + "{:02x}".format(i - block + 1) + "{:02x}".format(block) + hexstr[i+block:]
 				print(hexstr + "\n")
 
+# Here takes the hexstr and maps them to their assci char. You will get characters that don't exist.
+compressed_hexstr = ""
+for i in range(0, len(hexstr)-1,  2):
+	print("hex: {}\tasci:i {}\tchar: {}".format(hexstr[i:i+2], int(hexstr[i:i+2], 16), chr(int(hexstr[i:i+2], 16))))
+	compressed_hexstr += chr(int(hexstr[i:i+2], 16))
 
-
-
-compressed_str = ""
-for i in range(0, len(hexstr)-2,  2):
-	print("hex: {}\tint: {}\tchar: {}".format(hexstr[i:i+2], int(hexstr[i:i+2], 16), chr(int(hexstr[i:i+2], 16))))
-	compressed_str += chr(int(hexstr[i:i+2], 16))
-
+# Results
 print(string)
 print(hexstr)
-print(compressed_str)
-print("hex length before: {}\nhex length after: {}\ncompressed hex to char length: {}".format(initial_len_hexstr, len(hexstr), len(compressed_str)))
+print(compressed_hexstr)
+print("hex length before: {}\nhex length after: {}\ncompressed hex to char length: {}".format(initial_len_hexstr, len(hexstr), len(compressed_hexstr)))
 
-
+# Writes Results to text and gives the output for the decompressor.
 f.write(hexstr)
 f.write("\n")
-f.write(compressed_str)
+f.write(compressed_hexstr)
 f.close()
 output = open("compressor_output_py.txt", "w")
-output.write(compressed_str)
+output.write(compressed_hexstr)
 output.close()
