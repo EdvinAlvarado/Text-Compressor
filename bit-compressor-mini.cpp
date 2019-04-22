@@ -3,6 +3,7 @@
 #include <string>
 #include <bitset>
 #include <vector>
+#include <iomanip> // setfill, setw
 using namespace std;
 
 
@@ -13,57 +14,47 @@ void printvector(vector<T> &v) {
 			cout << v[i] << endl;
 	}
 }
+// printvector<string>(blocks);
+
+template <typename T>
+std::string bin_to_hex( T i ) {
+  std::stringstream stream;
+  stream //<< "0x" 
+         << std::setfill ('0') << std::setw(sizeof(T)/4) 
+         << std::hex << i;
+  return stream.str();
+}
+
+int starting_size(int length) {
+	int size;
+	if (length < 65636) {
+		if ((length > 2) && (length % 2 == 0)) {
+			size = length / 2;
+		} else if ((length > 2) && (length % 2 != 0)) {
+			size = (length - 1) / 2;
+		}
+	} else if (length >= 65636) {
+		size = 65636;
+	} else {
+		cerr << "Wrong hexstr length\n";
+	}
+	return size;
+}
 
 int main () {
-	stringstream ss;
-	string text_sample = "hello.";
-	int l = text_sample.length();
-	// cout << "text length: " << l << endl;	
-	// filling the string stream with the bit data.
-	for (int i = 0; i < l; i++) {
-		// ss << hex << (int)text_sample.at(i); 
-		ss << hex << bitset<8>((int)text_sample.at(i)); 
-	}
-	string hexstring = ss.str();
-	// cout << "0x" << hexstring << endl;
-	// int hexstring_length = hexstring.length();
-	cout << "length of hexstring: " << hexstring.length() << endl << endl;	
+	string str_sample = "HHHHHHHHHHHHHHHHHHHHHHH";
+	string hexstr = "";
+	for (const int& c : str_sample)
+		hexstr.append(bin_to_hex(c));
+	cout << hexstr << endl;
+	for (int block = starting_size(hexstr.length()); block > 6; block--) {
+		cout << "block size: " << block << endl;
 
-	// different block sizes
-	int num_of_blocks = 1;
-	for (int block_size = hexstring.length() / 2; block_size >= 8; block_size /= 2) {
-		num_of_blocks *= 2;
-		cout << "number of blocks: " << num_of_blocks << endl;
-		cout << "block size: " << block_size << endl;
-
-		// prints dynamic even sized blocks of hex string.
-		vector<string> blocks;
-		for (int n = 0; n < num_of_blocks; n++) {
-			// cout << "n = " << n << endl;
-			string block_string = hexstring.substr( (block_size * n),  block_size); // substr(location, length)
-			// cout << block_string << endl;
-			blocks.push_back(block_string);
-		}
-		// cout << endl;
-		printvector<string>(blocks);
-		cout << "blocks" << endl << endl;
-		// stringstream compressor_ss;
-		// compressor_ss << blocks[0];
-		for (int i = 0; i < blocks.size()-1; i++) {
-			cout << "block i: " << i << "\n" << blocks[i] << endl;			
-			for (int j = 1+i; j < blocks.size(); j++) {
-				cout << "block j: " << j << "\n" << blocks[j] << endl;		
-				if (blocks[i] == blocks[j]) {
-					// compressor_ss << "p" << j-i << block_size;
-					string coder = "P" + to_string(j-i) + "L" + to_string(block_size);
-					blocks[j] = coder;
-				}
+		for (int i = block; i < hexstr.length() - 6; i++) {
+			if (hexstr.substr(i, block).length() == block) {
+				cout << hexstr.substr(i, block) << endl;
 			}
-			// cout << "compressed binary:\n" << compressor_ss.str() << endl << endl;
-			// compressor_ss.str("");
-			cout << endl << "resulting vector" << endl;
-			printvector<string>(blocks);
-			cout << endl;
 		}
 	}
 }
+
