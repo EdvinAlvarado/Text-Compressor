@@ -1,5 +1,5 @@
 string = "HHHHHHHHHHHHHHHHHHHHHHH"
-f = open("compressor comparison.txt","w")
+f = open("compressor comparison.txt", "w")
 f.write(string)
 f.write("\n")
 
@@ -26,6 +26,7 @@ def starting_size(length):
 		return 65636
 	else:
 		print("wrong hexstr length.")
+
 
 # print(starting_size(len_hexstr))
 print("\n")
