@@ -33,7 +33,7 @@ print("\n")
 
 # Goes from the starting size to 6 because the marker itself is 6 hexes long because anything less than 7 will not compressed or just make it bigger.
 for block in range(starting_size(len(hexstr)), 6, -1):
-	print("block size: {}".format(block))	
+	print("block size: {}".format(block))
 
 	for i in range(block, len(hexstr) - 6):
 		if len(hexstr[i:i+block]) == block:
@@ -43,8 +43,8 @@ for block in range(starting_size(len(hexstr)), 6, -1):
 				print("MATCH")
 				print(hexstr[:i])
 				print("FF" + "{:02x}".format(i - block + 1) + "{:02x}".format(block))
-				print(hexstr[i+block:])
-				hexstr = hexstr[:i] + "FF" + "{:02x}".format(i - block + 1) + "{:02x}".format(block) + hexstr[i+block:]
+				print(hexstr[i + block:])
+				hexstr = hexstr[:i] + "FF" + "{:02x}".format(i - block + 1) + "{:02x}".format(block) + hexstr[i + block:]
 				print(hexstr + "\n")
 
 # Here takes the hexstr and maps them to their assci char. You will get characters that don't exist.
