@@ -25,6 +25,15 @@ std::string bin_to_hex( T i ) {
   return stream.str();
 }
 
+template <typename T>
+std::string int_to_hex( T i ) {
+  std::stringstream stream;
+  stream //<< "0x" 
+         << std::setfill ('0') << std::setw(2) 
+         << std::hex << i;
+  return stream.str();
+}
+
 int starting_size(int length) {
 	int size;
 	if (length < 65636) {
@@ -48,13 +57,26 @@ int main () {
 		hexstr.append(bin_to_hex(c));
 	cout << hexstr << endl;
 	for (int block = starting_size(hexstr.length()); block > 6; block--) {
-		cout << "block size: " << block << endl;
+		cout << "\n" << "block size: " << block << endl;
 
 		for (int i = block; i < hexstr.length() - 6; i++) {
 			if (hexstr.substr(i, block).length() == block) {
-				cout << hexstr.substr(i, block) << endl;
+				// cout << hexstr.substr(i, block) << endl;
+				cout << "i = " << i << "\nposition = " << i - block + 1 << "\n" << hexstr.substr(0, block) <<"\n" << hexstr.substr(i, block) << endl; 
+				if (hexstr.substr(0, block) == hexstr.substr(i, block)) {
+					cout << "MATCH" << endl;
+					cout << hexstr.substr(0, i) << endl;
+					cout << "FF" << int_to_hex(i - block + 1) << int_to_hex(block) << endl;
+					cout << hexstr.substr(i + block, string::npos) << endl;
+					hexstr = hexstr.substr(0, i) + "FF" + int_to_hex(i - block + 1) + int_to_hex(block) + hexstr.substr(i + block, string::npos);
+					cout << hexstr << endl;
+				}
 			}
 		}
+	}
+	string compressed_hexstr = "";
+	for (int i = 0; hexstr.length() - 1; i += 2) {
+		
 	}
 }
 
