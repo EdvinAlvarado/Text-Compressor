@@ -1,20 +1,11 @@
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <string>
-#include <bitset>
-#include <vector>
+// #include <bitset>
+// #include <vector>
 #include <iomanip> // setfill, setw
 using namespace std;
-
-
-// make a data type agnostic one.
-template <class T>
-void printvector(vector<T> &v) {
-	for (int i = 0; i < v.size(); i++) {
-			cout << v[i] << endl;
-	}
-}
-// printvector<string>(blocks);
 
 template <typename T>
 std::string bin_to_hex( T i ) {
@@ -56,6 +47,7 @@ int main () {
 	for (const int& c : str_sample)
 		hexstr.append(bin_to_hex(c));
 	cout << hexstr << endl;
+	int init_hexstr_len = hexstr.length();
 	for (int block = starting_size(hexstr.length()); block > 6; block--) {
 		cout << "\n" << "block size: " << block << endl;
 
@@ -74,9 +66,31 @@ int main () {
 			}
 		}
 	}
+	cout << endl;
 	string compressed_hexstr = "";
-	for (int i = 0; hexstr.length() - 1; i += 2) {
-		
+	for (int i = 0; i <hexstr.length() - 1; i += 2) {
+		cout << "hex: " << hexstr.substr(i, 2);
+		int intsubstr;
+		istringstream(hexstr.substr(i, 2)) >> std::hex >> intsubstr;
+		cout << "\tascii: " << intsubstr;
+		cout << "\tchar " << (char)intsubstr << endl;
+		compressed_hexstr += (char)intsubstr;
 	}
+	cout << endl;
+	cout << str_sample << endl;
+	cout << hexstr << endl;
+	cout << compressed_hexstr << endl;
+	cout << "hex length before: " << init_hexstr_len << endl;
+	cout << "hex lenght after: " << hexstr.length() << endl;
+	cout << "compressed hex to char length: " << compressed_hexstr.length() << endl; 
+	
+	ofstream compar_file;
+	compar_file.open("comparison C++.txt");
+	compar_file << hexstr << "\n\n" << compressed_hexstr;
+	compar_file.close();
+	ofstream output_file;
+	output_file.open("output C++.txt");
+	output_file << compressed_hexstr;
+	output_file.close();
 }
 
